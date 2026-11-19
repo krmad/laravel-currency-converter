@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'frankfurter' => [
+        'base_url' => env('FRANKFURTER_BASE_URL', 'https://api.frankfurter.dev/v2'),
+        'connect_timeout' => (int) env('FRANKFURTER_CONNECT_TIMEOUT', 3),
+        'timeout' => (int) env('FRANKFURTER_TIMEOUT', 10),
+    ],
+
 ];
