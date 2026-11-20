@@ -14,15 +14,16 @@ Route::get('/contact', function () {
 });
 Route::get('/profile', function () {
 
-    $name = "Kirubel";
-    $country = "Ethiopia";
+    $name = 'Kirubel';
+    $country = 'Ethiopia';
 
     return view('profile', [
         'name' => $name,
-        'country' => $country
+        'country' => $country,
     ]);
 
 });
 
 Route::get('/converter', [CurrencyConverterController::class, 'index'])->name('converter.index');
 Route::post('/convert', [CurrencyConverterController::class, 'convert'])->name('converter.convert');
+Route::delete('/converter/history', [CurrencyConverterController::class, 'clearHistory'])->name('converter.history.clear');

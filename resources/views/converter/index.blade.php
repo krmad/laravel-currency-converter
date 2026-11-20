@@ -22,12 +22,6 @@
                     Currency Converter
                 </a>
 
-                <nav class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                    <a href="{{ url('/') }}" class="rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">Home</a>
-                    <a href="{{ url('/about') }}" class="rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">About</a>
-                    <a href="{{ url('/contact') }}" class="rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">Contact</a>
-                    <a href="{{ url('/profile') }}" class="rounded-lg px-3 py-2 transition hover:bg-white hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">Profile</a>
-                </nav>
             </header>
 
             @if ($errors->has('conversion'))
@@ -36,6 +30,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
                     </svg>
                     <p>{{ $errors->first('conversion') }}</p>
+                </div>
+            @endif
+
+            @if (session('status'))
+                <div class="mt-8 flex gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200" role="status">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="mt-0.5 size-5 shrink-0" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75 9 17.25l10.5-10.5"/>
+                    </svg>
+                    <p>{{ session('status') }}</p>
                 </div>
             @endif
 
@@ -199,6 +202,65 @@
                     </div>
                 </section>
             </main>
+
+            <section class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-slate-900/5 backdrop-blur-xl sm:p-9 dark:border-white/10 dark:bg-slate-900/70" aria-labelledby="conversion-history-heading">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 id="conversion-history-heading" class="text-xl font-bold tracking-tight text-slate-950 sm:text-2xl dark:text-white">
+                            Recent conversions
+                        </h2>
+                        <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                            Your latest 10 conversions in this browser session.
+                        </p>
+                    </div>
+
+                    @if ($histories->isNotEmpty())
+                        <form method="POST" action="{{ route('converter.history.clear') }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 focus:outline-none focus:ring-4 focus:ring-rose-500/20 sm:w-auto dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200 dark:hover:bg-rose-950/70">
+                                Clear history
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="size-4" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12m-9 0V5h6v2m-8 0 .7 12h8.6L17 7M10 11v5m4-5v5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
+                @if ($histories->isEmpty())
+                    <p class="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 p-6 text-sm leading-7 text-slate-600 dark:border-slate-700 dark:bg-slate-950/40 dark:text-slate-300">
+                        No conversions yet. Your successful conversions will appear here.
+                    </p>
+                @else
+                    <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+                            <thead class="bg-slate-100/80 text-xs font-semibold tracking-wide text-slate-600 uppercase dark:bg-slate-800/80 dark:text-slate-300">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3">Amount</th>
+                                    <th scope="col" class="px-4 py-3">From</th>
+                                    <th scope="col" class="px-4 py-3">To</th>
+                                    <th scope="col" class="px-4 py-3">Exchange rate</th>
+                                    <th scope="col" class="px-4 py-3">Converted amount</th>
+                                    <th scope="col" class="px-4 py-3">Rate date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                                @foreach ($histories as $history)
+                                    <tr class="bg-white/70 dark:bg-slate-900/40">
+                                        <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">{{ number_format((float) $history->amount, 2) }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ $history->source_currency }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ $history->target_currency }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300">1 {{ $history->source_currency }} = {{ number_format((float) $history->rate, 4) }} {{ $history->target_currency }}</td>
+                                        <td class="px-4 py-3 font-semibold text-sky-700 dark:text-sky-300">{{ number_format((float) $history->converted_amount, 2) }} {{ $history->target_currency }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ $history->rate_date?->toDateString() }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </section>
         </div>
     </div>
 </body>

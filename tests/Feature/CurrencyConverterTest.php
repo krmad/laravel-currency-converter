@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class CurrencyConverterTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_converter_page_renders_default_currencies(): void
     {
         $response = $this->get(route('converter.index'));
@@ -31,6 +34,16 @@ class CurrencyConverterTest extends TestCase
             ->assertSee('aria-label="Swap source and target currencies"', false)
             ->assertSee('aria-controls="from to"', false)
             ->assertSee('id="swap-status"', false);
+    }
+
+    public function test_converter_interface_does_not_show_site_navigation_links(): void
+    {
+        $this->get(route('converter.index'))
+            ->assertOk()
+            ->assertDontSee('Home')
+            ->assertDontSee('About')
+            ->assertDontSee('Contact')
+            ->assertDontSee('Profile');
     }
 
     public function test_convert_rejects_empty_submission_with_clear_messages(): void
