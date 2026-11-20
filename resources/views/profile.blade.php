@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Profile</title>
+    <title>Profile - {{ config('app.name', 'Currency Converter') }}</title>
 </head>
 <body>
 

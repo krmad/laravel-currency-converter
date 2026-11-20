@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Convert currencies using public reference exchange rates from Frankfurter.">
 
-    <title>Currency Converter - {{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Currency Converter') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

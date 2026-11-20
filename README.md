@@ -1,58 +1,209 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Currency Converter
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A clean, responsive Laravel currency converter that uses public reference exchange rates from the Frankfurter API. The app supports multiple currencies, a one-click currency swap, clear amount validation, and a private conversion history for each browser session.
 
-## About Laravel
+Repository: https://github.com/krmad/laravel-currency-converter
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Currency conversion using current reference rates from the Frankfurter API.
+- Multiple currency selections from a curated list in `config/currencies.php`.
+- Currency swap with an accessible button that swaps only the two selected currencies.
+- Amount validation with friendly error messages for empty, invalid, and negative amounts.
+- Zero amount support, including successful conversion of `0` to `0.00`.
+- Exchange rate and rate date displayed after every successful conversion.
+- Conversion history saved automatically after every successful conversion.
+- Latest 10 conversions displayed below the converter, newest first.
+- Clear conversion history button for the current browser session only.
+- Browser-session history privacy using a hidden server-side session key.
+- Responsive interface with Tailwind CSS, including dark-mode styles.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Technologies Used
 
-## Learning Laravel
+- Laravel 13
+- PHP 8.4
+- SQLite
+- Blade
+- Tailwind CSS
+- JavaScript
+- Frankfurter API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Screenshots
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Add screenshots to the `docs/screenshots` folder when they are available.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Converter interface | Conversion history |
+| --- | --- |
+| ![Currency converter interface placeholder](docs/screenshots/converter.png) | ![Conversion history placeholder](docs/screenshots/conversion-history.png) |
 
-## Agentic Development
+## Installation on macOS
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+This guide assumes PHP 8.4, Composer, and Node.js/npm are already installed.
+
+### 1. Clone the repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/krmad/laravel-currency-converter.git
+cd laravel-currency-converter
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Composer dependencies
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This installs the Laravel framework and PHP packages listed in `composer.lock`.
 
-## Code of Conduct
+### 3. Install npm dependencies
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+npm install
+```
 
-## Security Vulnerabilities
+This installs Vite and Tailwind CSS so the frontend assets can be built.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Configure the environment file
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file is local to your machine and should not be committed. The example file already sets `APP_NAME="Currency Converter"` and SQLite as the database connection.
+
+### 5. Generate the application key when needed
+
+```bash
+php artisan key:generate
+```
+
+Run this after copying `.env.example`. It adds an application key used by Laravel for encryption and sessions.
+
+## Database Setup
+
+This project uses SQLite, which is already configured in `config/database.php`.
+
+Create the SQLite database file if it does not exist:
+
+```bash
+touch database/database.sqlite
+```
+
+Run the migrations:
+
+```bash
+php artisan migrate
+```
+
+This creates the standard Laravel tables plus the `conversion_histories` table used by the Conversion History feature.
+
+## Running the Application
+
+Build the production frontend assets:
+
+```bash
+npm run build
+```
+
+Start the Laravel development server:
+
+```bash
+php artisan serve
+```
+
+Then open the converter in your browser:
+
+```text
+http://127.0.0.1:8000/converter
+```
+
+If you are actively changing CSS or JavaScript, you can run `npm run dev` in a second terminal instead of rebuilding after every change.
+
+## Running Automated Tests
+
+Run the full test suite:
+
+```bash
+php artisan test
+```
+
+Run only the conversion history tests:
+
+```bash
+php artisan test tests/Feature/ConversionHistoryTest.php
+```
+
+Tests use an in-memory SQLite database configured in `phpunit.xml`, so they do not depend on data in your local `database/database.sqlite` file.
+
+## Project Structure Overview
+
+```text
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── CurrencyConverterController.php   # Page, conversion, and history actions
+│   └── Requests/
+│       └── ConvertCurrencyRequest.php         # Amount and currency validation
+├── Models/
+│   └── ConversionHistory.php                  # Eloquent model for saved conversions
+└── Services/
+    └── FrankfurterService.php                 # Exchange-rate API integration
+
+config/
+├── currencies.php                             # Available currencies and defaults
+└── services.php                               # Frankfurter API configuration
+
+database/
+├── factories/
+│   └── ConversionHistoryFactory.php           # Test data factory
+├── migrations/
+│   └── 2026_11_20_002019_create_conversion_histories_table.php
+└── database.sqlite                            # Local SQLite database
+
+resources/
+├── css/app.css                                # Tailwind entry point
+├── js/app.js                                  # Currency swap interaction
+└── views/
+    ├── converter/index.blade.php              # Converter and conversion history UI
+    ├── welcome.blade.php
+    ├── about.blade.php
+    ├── contact.blade.php
+    └── profile.blade.php
+
+routes/
+└── web.php                                    # Application routes
+
+tests/Feature/
+├── ConversionHistoryTest.php                  # Saving, display, privacy, and clearing tests
+└── CurrencyConverterTest.php                  # Conversion, validation, swap, and UI tests
+```
+
+### Main routes
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/converter` | Show the converter and recent history |
+| `POST` | `/convert` | Validate and perform a conversion |
+| `DELETE` | `/converter/history` | Clear the current session's history |
+
+The original `/`, `/about`, `/contact`, and `/profile` routes remain available.
+
+## API Information and Limitations
+
+The app uses the Frankfurter API v2 rate endpoint:
+
+```text
+https://api.frankfurter.dev/v2/rate/{from}/{to}
+```
+
+- No API key is required.
+- The app displays the exchange rate and the rate date returned by the API.
+- Converting a currency to itself skips the API call and uses a rate of `1`.
+- If the API is unavailable or returns invalid data, the app shows a friendly error and does not save a history row.
+- Frankfurter provides daily reference rates, not live market quotes.
+- Only currencies listed in `config/currencies.php` can be selected in the UI.
+- Conversion history is private to the current browser session. There are no user accounts, and clearing browser cookies starts a new session with no access to the previous session's history.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+No license has been specified for this project. Do not assume the project is MIT licensed or otherwise licensed. A license should only be added if the project owner chooses one.
