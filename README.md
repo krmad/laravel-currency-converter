@@ -1,185 +1,81 @@
-# Project Branding and Documentation
+# Currency Converter
 
-Project name: Currency Converter
+A Laravel learning project with a currency conversion interface. It supports converting between a curated list of currencies through the Frankfurter API and keeps the ten most recent conversions in a browser session.
 
-GitHub repository: https://github.com/krmad/laravel-currency-converter
+## Features
 
-I want to make my Laravel project professional and ready for GitHub.
+- Convert amounts across 36 configured currencies
+- Use USD to ETB as the default currency pair
+- Validate amounts and currency codes before conversion
+- Fetch live exchange rates from the Frankfurter API
+- Bypass the API for same-currency conversions
+- Show conversion history for the current browser session
+- Clear conversion history
+- Display clear validation and service error messages
 
-## TASK 1: Professional README.md
+## Stack
 
-Rewrite README.md with a professional structure.
+- **Runtime:** PHP 8.3+
+- **Framework:** Laravel 13
+- **Frontend:** Blade, Tailwind CSS 4, and Vite 8
+- **Database:** SQLite by default
+- **Testing:** PHPUnit 12
+- **Exchange-rate provider:** [Frankfurter API](https://frankfurter.dev/)
 
-Include:
+## Project Structure
 
-1. Project title: Currency Converter
-2. Project description.
-3. Features:
-   - Currency conversion.
-   - Multiple currency selections.
-   - Currency swap.
-   - Amount validation.
-   - Zero amount support.
-   - Exchange rate and rate date.
-   - Conversion history.
-   - Latest 10 conversions.
-   - Clear conversion history.
-   - Browser-session history privacy.
-   - Responsive interface.
-4. Technologies used:
-   - Laravel 13
-   - PHP 8.4
-   - SQLite
-   - Blade
-   - Tailwind CSS
-   - JavaScript
-   - Frankfurter API
-5. Screenshots section with placeholders.
-6. Installation instructions for macOS.
-7. Database setup instructions.
-8. How to run the application.
-9. How to run automated tests.
-10. Project structure overview.
-11. API information and limitations.
-12. License section (do not invent a license; state that none has been specified).
+```text
+app/
+  Http/
+    Controllers/CurrencyConverterController.php  Conversion and history actions
+    Requests/ConvertCurrencyRequest.php          Conversion input validation
+  Models/ConversionHistory.php                   Conversion history Eloquent model
+  Services/FrankfurterService.php                Frankfurter API integration
+config/
+  currencies.php                                  Available currencies and defaults
+  services.php                                    Frankfurter API settings
+resources/views/
+  converter/index.blade.php                       Converter interface
+routes/web.php                                    Application routes
+database/migrations/                              Database schema
+ tests/Feature/                                   Converter and history feature tests# Laravel Learning
 
-## TASK 2: Laravel application branding
+A Laravel learning project with a currency conversion interface. It supports converting between a curated list of currencies through the Frankfurter API and keeps the ten most recent conversions in a browser session.
 
-- Set APP_NAME="Currency Converter" in .env.example.
-- Update only APP_NAME in the local .env file.
-- Update the browser page title to Currency Converter.
-- Make the application branding consistent.
-- Do not expose or print other .env values.
+## Features
 
-## TASK 3: Installation and usage documentation
+- Convert amounts across 36 configured currencies
+- Use USD to ETB as the default currency pair
+- Validate amounts and currency codes before conversion
+- Fetch live exchange rates from the Frankfurter API
+- Bypass the API for same-currency conversions
+- Show conversion history for the current browser session
+- Clear conversion history
+- Display clear validation and service error messages
 
-Provide beginner-friendly macOS instructions.
+## Stack
 
-Include commands for:
+- **Runtime:** PHP 8.3+
+- **Framework:** Laravel 13
+- **Frontend:** Blade, Tailwind CSS 4, and Vite 8
+- **Database:** SQLite by default
+- **Testing:** PHPUnit 12
+- **Exchange-rate provider:** [Frankfurter API](https://frankfurter.dev/)
 
-- Cloning the repository.
-- Installing Composer dependencies.
-- Installing npm dependencies.
-- Configuring .env.
-- Generating the application key when needed.
-- Creating the SQLite database.
-- Running migrations.
-- Building frontend assets.
-- Starting the Laravel development server.
-- Running tests.
+## Project Structure
 
-Use the actual project structure and inspect the existing configuration before writing commands.
-
-## IMPORTANT SAFETY RULES
-
-- Inspect files before editing.
-- Preserve all existing functionality.
-- Do not change database schema or migrations.
-- Do not delete unrelated files.
-- Do not rename the local project folder.
-- Do not rename the GitHub repository.
-- Preserve all staged and unstaged Git changes, especially Conversion History.
-- Do not commit or push.
-- Do not modify application logic unnecessarily.
-
-## FINAL VERIFICATION
-
-Run:
-- php artisan test
-- npm run build
-- git diff --check
-- git status
-
-Report every modified file and explain what changed.# Project Branding and Documentation
-
-Project name: Currency Converter
-
-GitHub repository: https://github.com/krmad/laravel-currency-converter
-
-I want to make my Laravel project professional and ready for GitHub.
-
-## TASK 1: Professional README.md
-
-Rewrite README.md with a professional structure.
-
-Include:
-
-1. Project title: Currency Converter
-2. Project description.
-3. Features:
-   - Currency conversion.
-   - Multiple currency selections.
-   - Currency swap.
-   - Amount validation.
-   - Zero amount support.
-   - Exchange rate and rate date.
-   - Conversion history.
-   - Latest 10 conversions.
-   - Clear conversion history.
-   - Browser-session history privacy.
-   - Responsive interface.
-4. Technologies used:
-   - Laravel 13
-   - PHP 8.4
-   - SQLite
-   - Blade
-   - Tailwind CSS
-   - JavaScript
-   - Frankfurter API
-5. Screenshots section with placeholders.
-6. Installation instructions for macOS.
-7. Database setup instructions.
-8. How to run the application.
-9. How to run automated tests.
-10. Project structure overview.
-11. API information and limitations.
-12. License section (do not invent a license; state that none has been specified).
-
-## TASK 2: Laravel application branding
-
-- Set APP_NAME="Currency Converter" in .env.example.
-- Update only APP_NAME in the local .env file.
-- Update the browser page title to Currency Converter.
-- Make the application branding consistent.
-- Do not expose or print other .env values.
-
-## TASK 3: Installation and usage documentation
-
-Provide beginner-friendly macOS instructions.
-
-Include commands for:
-
-- Cloning the repository.
-- Installing Composer dependencies.
-- Installing npm dependencies.
-- Configuring .env.
-- Generating the application key when needed.
-- Creating the SQLite database.
-- Running migrations.
-- Building frontend assets.
-- Starting the Laravel development server.
-- Running tests.
-
-Use the actual project structure and inspect the existing configuration before writing commands.
-
-## IMPORTANT SAFETY RULES
-
-- Inspect files before editing.
-- Preserve all existing functionality.
-- Do not change database schema or migrations.
-- Do not delete unrelated files.
-- Do not rename the local project folder.
-- Do not rename the GitHub repository.
-- Preserve all staged and unstaged Git changes, especially Conversion History.
-- Do not commit or push.
-- Do not modify application logic unnecessarily.
-
-## FINAL VERIFICATION
-
-Run:
-- php artisan test
-- npm run build
-- git diff --check
-- git status
-
-Report every modified file and explain what changed.
+```text
+app/
+  Http/
+    Controllers/CurrencyConverterController.php  Conversion and history actions
+    Requests/ConvertCurrencyRequest.php          Conversion input validation
+  Models/ConversionHistory.php                   Conversion history Eloquent model
+  Services/FrankfurterService.php                Frankfurter API integration
+config/
+  currencies.php                                  Available currencies and defaults
+  services.php                                    Frankfurter API settings
+resources/views/
+  converter/index.blade.php                       Converter interface
+routes/web.php                                    Application routes
+database/migrations/                              Database schema
+ tests/Feature/                                   Converter and history feature tests
