@@ -109,11 +109,18 @@
                                 @enderror
                             </div>
 
-                            <div class="flex size-11 items-center justify-center justify-self-start rounded-full border border-slate-200 bg-slate-50 text-slate-500 sm:mb-1 sm:justify-self-center dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                            <button
+                                type="button"
+                                id="swap-currencies"
+                                aria-label="Swap source and target currencies"
+                                aria-controls="from to"
+                                title="Swap currencies"
+                                class="flex size-11 cursor-pointer items-center justify-center justify-self-start rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition hover:bg-white hover:text-slate-800 focus:outline-none focus:ring-4 focus:ring-sky-500/20 sm:mb-1 sm:justify-self-center dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="size-5" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h13m0 0-3.5-3.5M20 7l-3.5 3.5M17 17H4m0 0 3.5 3.5M4 17l3.5-3.5"/>
                                 </svg>
-                            </div>
+                            </button>
 
                             <div class="flex flex-col gap-2">
                                 <label for="to" class="text-sm font-semibold text-slate-800 dark:text-slate-200">To</label>
@@ -136,6 +143,8 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <span id="swap-status" class="sr-only" aria-live="polite"></span>
 
                         <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition hover:bg-sky-700 focus:outline-none focus:ring-4 focus:ring-sky-500/25 sm:w-auto">
                             Convert currency

@@ -19,38 +19,106 @@ class CurrencyConverterTest extends TestCase
             ->assertViewHas('currencies');
     }
 
+    public function test_converter_page_has_accessible_swap_button(): void
+    {
+        $response = $this->get(route('converter.index'));
+
+        $response->assertOk()
+            ->assertSee('id="from"', false)
+            ->assertSee('id="to"', false)
+            ->assertSee('id="swap-currencies"', false)
+            ->assertSee('type="button"', false)
+            ->assertSee('aria-label="Swap source and target currencies"', false)
+            ->assertSee('aria-controls="from to"', false)
+            ->assertSee('id="swap-status"', false);
+    }
+
     public function test_convert_rejects_empty_submission_with_clear_messages(): void
     {
-        $response = $this->post(route('converter.convert'), [
+        Http::preventStrayRequests();
+
+        $response = $this->from(route('converter.index'))->post(route('converter.convert'), [
             'amount' => '',
             'from' => '',
             'to' => '',
         ]);
 
-        $response->assertRedirect()
+        $response->assertRedirect(route('converter.index'))
             ->assertSessionHasErrors([
                 'amount' => 'Please enter an amount.',
                 'from' => 'Please choose a source currency.',
                 'to' => 'Please choose a target currency.',
-            ]);
+            ])
+            ->assertSessionHasInput('amount', '');
     }
 
-    public function test_convert_rejects_zero_amount(): void
+    public function test_convert_rejects_whitespace_only_amount_and_preserves_input(): void
     {
+        Http::preventStrayRequests();
+
+        $response = $this->from(route('converter.index'))->post(route('converter.convert'), [
+            'amount' => '   ',
+            'from' => 'USD',
+            'to' => 'ETB',
+        ]);
+
+        $response->assertRedirect(route('converter.index'))
+            ->assertSessionHasErrors([
+                'amount' => 'Please enter an amount.',
+            ])
+            ->assertSessionHasInput('amount', '')
+            ->assertSessionHasInput('from', 'USD')
+            ->assertSessionHasInput('to', 'ETB');
+    }
+
+    public function test_convert_allows_zero_amount(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            'https://api.frankfurter.dev/v2/rate/usd/etb' => Http::response([
+                'date' => '2026-11-19',
+                'base' => 'USD',
+                'quote' => 'ETB',
+                'rate' => 162.13,
+            ]),
+        ]);
+
         $response = $this->post(route('converter.convert'), [
             'amount' => '0',
             'from' => 'USD',
             'to' => 'ETB',
         ]);
 
-        $response->assertRedirect()
+        $response->assertOk()
+            ->assertSee('0.00')
+            ->assertViewHas('conversion.convertedAmount', 0.0);
+
+        Http::assertSent(fn (Request $request) => $request->url() === 'https://api.frankfurter.dev/v2/rate/usd/etb');
+    }
+
+    public function test_convert_rejects_negative_amount_and_preserves_input(): void
+    {
+        Http::preventStrayRequests();
+
+        $response = $this->from(route('converter.index'))->post(route('converter.convert'), [
+            'amount' => '-1',
+            'from' => 'USD',
+            'to' => 'ETB',
+        ]);
+
+        $response->assertRedirect(route('converter.index'))
             ->assertSessionHasErrors([
-                'amount' => 'The amount must be greater than zero.',
-            ]);
+                'amount' => 'The amount cannot be negative.',
+            ])
+            ->assertSessionHasInput('amount', '-1')
+            ->assertSessionHasInput('from', 'USD')
+            ->assertSessionHasInput('to', 'ETB');
     }
 
     public function test_convert_rejects_unknown_currency(): void
     {
+        Http::preventStrayRequests();
+
         $response = $this->post(route('converter.convert'), [
             'amount' => '10',
             'from' => 'XXX',

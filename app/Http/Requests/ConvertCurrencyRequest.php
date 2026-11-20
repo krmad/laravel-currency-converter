@@ -13,6 +13,15 @@ class ConvertCurrencyRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $amount = $this->input('amount');
+
+        if (is_string($amount)) {
+            $this->merge(['amount' => trim($amount)]);
+        }
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -21,7 +30,7 @@ class ConvertCurrencyRequest extends FormRequest
         $currencyCodes = array_keys((array) config('currencies.available', []));
 
         return [
-            'amount' => ['required', 'numeric', 'gt:0', 'max:1000000000000'],
+            'amount' => ['required', 'numeric', 'gte:0', 'max:1000000000000'],
             'from' => ['required', 'string', Rule::in($currencyCodes)],
             'to' => ['required', 'string', Rule::in($currencyCodes)],
         ];
@@ -35,7 +44,7 @@ class ConvertCurrencyRequest extends FormRequest
         return [
             'amount.required' => 'Please enter an amount.',
             'amount.numeric' => 'The amount must be a number.',
-            'amount.gt' => 'The amount must be greater than zero.',
+            'amount.gte' => 'The amount cannot be negative.',
             'amount.max' => 'The amount is too large.',
             'from.required' => 'Please choose a source currency.',
             'from.string' => 'Please choose a valid source currency.',
